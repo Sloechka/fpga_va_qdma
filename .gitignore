@@ -1,0 +1,9 @@
+# cpp build files
+*.o
+*.a
+*.so
+build*
+
+# misc
+.vscode
+c_cpp_properties.json
