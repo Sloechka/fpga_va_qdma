@@ -25,7 +25,8 @@ module qdma_app #(
     parameter CRC_WIDTH         = 32,
     parameter QID_WIDTH         = 11,
     parameter VIP2DUT_WORDS_NUM = 16,
-    parameter DUT2VIP_WORDS_NUM = 16
+    parameter DUT2VIP_WORDS_NUM = 16,
+    parameter DEBUG_DUT_TEST    = 1
 )(
     input logic clk,
     input logic rst_n,
@@ -212,12 +213,12 @@ always_ff @(posedge clk) begin
 end
 
 /* -------------------------------- */
-/* YOUR DUT INSTANTIATION GOES HERE */
+/* YOUR DUT WRAPPER INSTANTIATION GOES HERE */
 /* -------------------------------- */
 
 // NOTE: use gated dut_clk signal and rst_n AXI reset
 
-// dut_test
+// dut_wrapper
 // #(
 //     .IN_BUS_WIDTH(DATA_WIDTH * VIP2DUT_WORDS_NUM),
 //     .OUT_BUS_WIDTH(DATA_WIDTH * DUT2VIP_WORDS_NUM)
@@ -229,5 +230,20 @@ end
 //     .in  (vip2dut),
 //     .out (dut2vip)
 // );
+
+generate
+    if(DEBUG_DUT_TEST)
+        dut_test
+        #(
+            .SIG_WIDTH(DATA_WIDTH * VIP2DUT_WORDS_NUM)
+        )
+        dut_test_i
+        (
+            .clk (dut_clk),
+            .rst_n(rst_n),
+            .in  (vip2dut),
+            .out (dut2vip)
+        );
+endgenerate
 
 endmodule
